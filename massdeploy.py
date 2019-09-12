@@ -10,6 +10,9 @@
 #    The extra config lines for ISC DHCP server configuration file
 #    https://help.raritan.com/px2-2000/v3.5.0/en/#41805.htm
 #
+#    Good blog post by Henry Hsu
+#    https://www.raritan.com/blog/detail/how-to-rapidly-configure-intelligent-rack-pdus
+#
 
 #################################################################
 
@@ -19,14 +22,14 @@ import argparse
 
 #################################################################
 
-DEFAULT_MASSDEPLOY_FILENAME = 'massdeploy.txt'
+DEFAULT_MASSDEPLOY_FILENAME   = 'massdeploy.txt'
+DEFAULT_SECTION_DELIMITER     = '%%'
+DEFAULT_COMMENT_STRING        = '#'
 
 FWUPDATE_FILENAME   = 'fwupdate.cfg'
 CONFIG_FILENAME     = 'config.txt'
 DEVICES_FILENAME    = 'devices.csv'
 
-COMMENT_CHARACTER = '#'
-SECTION_DELIMITER = '%%'
 
 #################################################################
 
@@ -124,8 +127,10 @@ def tokenreplace(line, tokenlist):
 
 #################################################################
 
-def processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile):
+def processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile, sectiondelimiter, commentstring):
     global progname
+
+    lencommentstring = len(commentstring)
 
     linenum = 0
     section = 1
@@ -136,15 +141,15 @@ def processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile)
 
         line = line.rstrip()
 
-        if line != '':
-            if line[0] == COMMENT_CHARACTER:
+        if len(line) >= lencommentstring:
+            if line[:lencommentstring] == commentstring:
                 continue
 
-        if line == SECTION_DELIMITER:
+        if line == sectiondelimiter:
             section += 1
 
             if section > 3:
-                print('{}: too many section delimiters "{}" in mass deploy file'.format(progname, SECTION_DELIMITER))
+                print('{}: too many section delimiters "{}" in mass deploy file'.format(progname, sectiondelimiter))
                 sys.exit(1)
 
             continue
@@ -168,10 +173,8 @@ def processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile)
             sys.exit(1)
 
     if section != 3:
-        print('{}: not enough section delimiters "{}" in mass deploy file'.format(progname, SECTION_DELIMITER))
+        print('{}: not enough section delimiters "{}" in mass deploy file'.format(progname, sectiondelimiter))
         sys.exit(1)
-
-    ### print(columnnames)
 
     return
 
@@ -186,7 +189,10 @@ def main():
 
     parser = argparse.ArgumentParser()
         
-    parser.add_argument('--file',     help='massdeploy config file', default=DEFAULT_MASSDEPLOY_FILENAME)
+    parser.add_argument('--file',     help='massdeploy config file',      default=DEFAULT_MASSDEPLOY_FILENAME)
+    parser.add_argument('--section',  help='section delimiter string',    default=DEFAULT_SECTION_DELIMITER)
+    parser.add_argument('--comment',  help='comment string',              default=DEFAULT_COMMENT_STRING)
+
     # parser.add_argument('--speed',    help='baud rate',                           default=DEFAULT_SPEED)
     # parser.add_argument('--capture',  help='file name to capture output',         nargs=1)
     # parser.add_argument('--defer',    help='defer capture output',                action='store_true')
@@ -197,6 +203,8 @@ def main():
     args = parser.parse_args()
     
     massdeployfilename = args.file
+    sectiondelimiter   = args.section
+    commentdelimiter   = args.comment
 
     try:
         massdeployfile = open(massdeployfilename, 'r', encoding='utf-8')
@@ -234,7 +242,7 @@ def main():
         print('{}: unable to open devices file "{}" for writing'.format(progname, DEVICES_FILENAME), file=sys.stderr)
         sys.exit(1)
 
-    processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile)
+    processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile, sectiondelimiter, commentdelimiter)
 
     massdeployfile.close()
     fwupdatefile.close()
