@@ -1,0 +1,19 @@
+#
+# massdeploy.txt
+#
+# an alternative Raritan Mass Deployment Utility configuration file
+#
+user=admin
+password=raritan
+logfile=log.txt
+config=config.txt
+device_list=devices.csv
+%%
+SERIAL     MAC               PDU-NAME DNS1        DNS2
+PK60860023,00:0d:5d:07:6a:85,px2study,192.168.8.1,192.168.8.3
+%%
+pduname=${PDU-NAME}
+net.dns.server_addrs._e_.0=${DNS1}
+net.dns.server_addrs._e_.1=${DNS2}
+security.block_time=60
+security.max_login_fails=10
