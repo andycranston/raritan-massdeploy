@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 #
-# @(!--#) @(#) massdeploy.py, version 005, 10-september-2019
+# @(!--#) @(#) massdeploy.py, version 006, 12-september-2019
 #
 # from a file called massdeploy.txt generate the Raritan
 # mass deployment files
@@ -15,10 +15,11 @@
 
 import sys
 import os
+import argparse
 
 #################################################################
 
-MASSDEPLOY_FILENAME = 'massdeploy.txt'
+DEFAULT_MASSDEPLOY_FILENAME = 'massdeploy.txt'
 
 FWUPDATE_FILENAME   = 'fwupdate.cfg'
 CONFIG_FILENAME     = 'config.txt'
@@ -183,10 +184,24 @@ def processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile)
 def main():
     global progname
 
+    parser = argparse.ArgumentParser()
+        
+    parser.add_argument('--file',     help='massdeploy config file', default=DEFAULT_MASSDEPLOY_FILENAME)
+    # parser.add_argument('--speed',    help='baud rate',                           default=DEFAULT_SPEED)
+    # parser.add_argument('--capture',  help='file name to capture output',         nargs=1)
+    # parser.add_argument('--defer',    help='defer capture output',                action='store_true')
+    # parser.add_argument('--escape',   help='escape character',                    default=DEFAULT_ESCAPE_CHAR)
+    # parser.add_argument('--ptimeout', help='port timeout in seconds (float)',     default=DEFAULT_PORT_TIMEOUT)
+    # parser.add_argument('--ktimeout', help='keyboard timeout in seconds (float)', default=DEFAULT_KEYBOARD_TIMEOUT)
+
+    args = parser.parse_args()
+    
+    massdeployfilename = args.file
+
     try:
-        massdeployfile = open(MASSDEPLOY_FILENAME, 'r', encoding='utf-8')
+        massdeployfile = open(massdeployfilename, 'r', encoding='utf-8')
     except IOError:
-        print('{}: unable to open mass deployment file "{}" for reading'.format(progname, MASSDEPLOY_FILENAME), file=sys.stderr)
+        print('{}: unable to open mass deployment file "{}" for reading'.format(progname, massdeployfilename), file=sys.stderr)
         sys.exit(1)
 
     if backupfile(FWUPDATE_FILENAME) == False:
