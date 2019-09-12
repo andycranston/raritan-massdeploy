@@ -141,9 +141,10 @@ def processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile,
 
         line = line.rstrip()
 
-        if len(line) >= lencommentstring:
-            if line[:lencommentstring] == commentstring:
-                continue
+        if lencommentstring > 0:
+            if len(line) >= lencommentstring:
+                if line[:lencommentstring] == commentstring:
+                    continue
 
         if line == sectiondelimiter:
             section += 1
@@ -192,19 +193,16 @@ def main():
     parser.add_argument('--file',     help='massdeploy config file',      default=DEFAULT_MASSDEPLOY_FILENAME)
     parser.add_argument('--section',  help='section delimiter string',    default=DEFAULT_SECTION_DELIMITER)
     parser.add_argument('--comment',  help='comment string',              default=DEFAULT_COMMENT_STRING)
-
-    # parser.add_argument('--speed',    help='baud rate',                           default=DEFAULT_SPEED)
-    # parser.add_argument('--capture',  help='file name to capture output',         nargs=1)
-    # parser.add_argument('--defer',    help='defer capture output',                action='store_true')
-    # parser.add_argument('--escape',   help='escape character',                    default=DEFAULT_ESCAPE_CHAR)
-    # parser.add_argument('--ptimeout', help='port timeout in seconds (float)',     default=DEFAULT_PORT_TIMEOUT)
-    # parser.add_argument('--ktimeout', help='keyboard timeout in seconds (float)', default=DEFAULT_KEYBOARD_TIMEOUT)
+    parser.add_argument('--disable',  help='disable comment processing',  action="store_true")
 
     args = parser.parse_args()
     
     massdeployfilename = args.file
     sectiondelimiter   = args.section
-    commentdelimiter   = args.comment
+    commentstring      = args.comment
+
+    if args.disable:
+        commentstring = ''
 
     try:
         massdeployfile = open(massdeployfilename, 'r', encoding='utf-8')
@@ -242,7 +240,7 @@ def main():
         print('{}: unable to open devices file "{}" for writing'.format(progname, DEVICES_FILENAME), file=sys.stderr)
         sys.exit(1)
 
-    processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile, sectiondelimiter, commentdelimiter)
+    processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile, sectiondelimiter, commentstring)
 
     massdeployfile.close()
     fwupdatefile.close()
