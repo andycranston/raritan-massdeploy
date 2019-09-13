@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 #
-# @(!--#) @(#) massdeploy.py, version 006, 12-september-2019
+# @(!--#) @(#) massdeploy.py, version 008, 13-september-2019
 #
 # from a file called massdeploy.txt generate the Raritan
 # mass deployment files
@@ -25,11 +25,17 @@ import argparse
 DEFAULT_MASSDEPLOY_FILENAME   = 'massdeploy.txt'
 DEFAULT_SECTION_DELIMITER     = '%%'
 DEFAULT_COMMENT_STRING        = '#'
+DEFAULT_MACRO_STRING          = '@@'
 
 FWUPDATE_FILENAME   = 'fwupdate.cfg'
 CONFIG_FILENAME     = 'config.txt'
 DEVICES_FILENAME    = 'devices.csv'
 
+macros = { 'PDUNAME':     'pdu.name',
+           'DNS1':        'net.dns.server_addrs._e_.0',
+           'DNS2':        'net.dns.server_addrs._e_.1',
+           'DNS3':        'net.dns.server_addrs._e_.2',
+         }
 
 #################################################################
 
@@ -87,6 +93,32 @@ def isnamesline(line):
 
 #################################################################
 
+def macroreplace(line, macrostring, lenmacrostring):
+    global macros
+
+    ### print('doing a macro replace')
+
+    firstmacrostring = line.find(macrostring)
+    if firstmacrostring == -1:
+        return line
+
+    secondmacrostring = line.find(macrostring, firstmacrostring+lenmacrostring)
+    if secondmacrostring == -1:
+        return line
+
+    if (secondmacrostring - firstmacrostring) <= lenmacrostring:
+        return line
+
+    macroname = line[firstmacrostring+lenmacrostring:secondmacrostring]
+
+    if macroname in macros:
+        macrovalue = macros[macroname]
+        line = line[:firstmacrostring] + macrovalue + line[secondmacrostring+lenmacrostring:]
+
+    return line
+
+#################################################################
+
 def tokenreplace(line, tokenlist):
     replaceline = ''
 
@@ -127,9 +159,10 @@ def tokenreplace(line, tokenlist):
 
 #################################################################
 
-def processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile, sectiondelimiter, commentstring):
+def processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile, sectiondelimiter, macrostring, commentstring):
     global progname
 
+    lenmacrostring   = len(macrostring)
     lencommentstring = len(commentstring)
 
     linenum = 0
@@ -163,6 +196,9 @@ def processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile,
             else:
                 print(line, file=devicesfile)
         elif section == 3:
+            if lenmacrostring > 0:
+                if len(line) > lenmacrostring:
+                    line = macroreplace(line, macrostring, lenmacrostring)
             success, trline = tokenreplace(line, columnnames)
             if success:
                 print(trline, file=configfile)
@@ -192,6 +228,7 @@ def main():
         
     parser.add_argument('--file',     help='massdeploy config file',      default=DEFAULT_MASSDEPLOY_FILENAME)
     parser.add_argument('--section',  help='section delimiter string',    default=DEFAULT_SECTION_DELIMITER)
+    parser.add_argument('--macro',    help='macro string',                default=DEFAULT_MACRO_STRING)
     parser.add_argument('--comment',  help='comment string',              default=DEFAULT_COMMENT_STRING)
     parser.add_argument('--disable',  help='disable comment processing',  action="store_true")
 
@@ -199,6 +236,7 @@ def main():
     
     massdeployfilename = args.file
     sectiondelimiter   = args.section
+    macrostring        = args.macro
     commentstring      = args.comment
 
     if args.disable:
@@ -240,7 +278,7 @@ def main():
         print('{}: unable to open devices file "{}" for writing'.format(progname, DEVICES_FILENAME), file=sys.stderr)
         sys.exit(1)
 
-    processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile, sectiondelimiter, commentstring)
+    processmassdeployfile(massdeployfile, fwupdatefile, configfile, devicesfile, sectiondelimiter, macrostring, commentstring)
 
     massdeployfile.close()
     fwupdatefile.close()
