@@ -1,0 +1,29 @@
+#
+# massdeploy.txt, version 002, 13-september-2019
+#
+# an alternative Raritan Mass Deployment Utility configuration file
+#
+user=admin
+password=raritan
+logfile=log.txt
+config=config.txt
+device_list=devices.csv
+%%
+SERIAL     MAC               PDUNAME  IPv4        SN GATEWAY     DNS1        DNS2
+PK60860023,00:0d:5d:07:6a:85,px2study,192.168.8.9,24,192.168.8.1,192.168.8.1,192.168.8.3
+%%
+@@PDUNAME@@=${PDUNAME}
+@@DNS1@@=${DNS1}
+
+
+# pdu.name=$PDU-NAME
+# net.interfaces[eth0].ipv4.enabled=1
+# net.interfaces[eth0].ipv4.config_method=static
+# net.interfaces[eth0].ipv4.static.addr_cidr.addr=${IPv4}
+# net.interfaces[eth0].ipv4.static.addr_cidr.prefix_len=${SN}
+# net.routing.ipv4.default_gateway_addr=${GATEWAY}
+# net.interfaces[eth0].ipv6.enabled=0
+# net.dns.server_addrs._e_.0=${DNS1}
+# net.dns.server_addrs._e_.1=${DNS2}
+# security.block_time=120
+# security.max_login_fails=5
