@@ -19,11 +19,7 @@ Ability to refer to columns by name instead of column number which avoids renumb
 
 command line params
 
-disable comments
-set comment char/string to ...
 set directive char/string to ...
-set section marker/delimter to ...
-config file arg to override massdeploy.txt
 
 new features
 
