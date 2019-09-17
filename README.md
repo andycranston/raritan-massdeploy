@@ -19,14 +19,6 @@ devices.csv
 
 which can then be copied to one or more USB keys or can be copied to a TFTP server.
 
-# A demonstration video of `massdeploy.py`
-
-The following link:
-
-[Using the massdeploy.py utility](https://www.youtube.com/watch?v=SOMECODEHERE)
-
-is an introduction to the `massdeploy.py` utility.
-
 ## Why use `massdeploy.py` utility instead of the Raritan supplied solution?
 
 Raritan supply the following:
@@ -156,7 +148,7 @@ net.interfaces[eth0].ipv6.enabled=0
 Using the `massdeploy.txt` utility in this fashion provides a handy way to
 keep the configuration details all in one file.
 
-However there is more...
+However, there is more...
 
 ## Comments
 
@@ -216,7 +208,9 @@ used to refer to specific columns in the second device section.  In the examples
 the substitution ${3} refers to the third column which is the name of the PDU.
 
 This is handy enough but it would be nicer if we could refer to the third column using
-a notation of ${PDU} making things nice and clear.  Well you can.  Look at this:
+a notation of ${PDU} making things nice and clear.
+
+Well, the good news is that you can.  Look at this:
 
 ```
 user=admin
@@ -286,7 +280,7 @@ To make things easier there is the @@ macro.  Look at the following third config
 ```
 
 If the name between the first @@ and the second @@ is recognised as a built in macro
-the `massdeploy.py` utility will change it to the appropriate test.
+the `massdeploy.py` utility will change it to the appropriate text.
 
 ## Summary
 
