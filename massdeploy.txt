@@ -1,19 +1,31 @@
 #
 # massdeploy.txt
 #
-# an alternative Raritan Mass Deployment Utility configuration file
+# version 007 - 16-september-2019
+#
+# PDUs in data hall 7, first floor
 #
 user=admin
 password=raritan
-logfile=log.txt
+log=log.txt
 config=config.txt
 device_list=devices.csv
 %%
-SERIAL     MAC               PDU-NAME DNS1        DNS2
-PK60860023,00:0d:5d:07:6a:85,px2study,192.168.8.1,192.168.8.3
+SERIAL     MAC               PDU  IPADDRESS    SUBNET
+PK60861100,00:0d:5d:b6:53:6b,pdu1,192.168.8.20,24
+PK60860061,00:0d:5d:c7:48:53,pdu2,192.168.8.21,24
+PK60867699,00:0d:5d:9e:c0:45,pdu3,192.168.8.22,24
+PK60860023,00:0d:5d:07:6a:85,pdu4,192.168.8.23,24
+PK60867390,00:0d:5d:7b:8f:9c,pdu5,192.168.8.24,24
+PK60867769,00:0d:5d:23:91:7a,pdu6,192.168.8.25,24
+PK60861021,00:0d:5d:89:3a:37,pdu7,192.168.8.26,24
+PK60863094,00:0d:5d:03:4c:1b,pdu8,192.168.8.27,24
+PK60863926,00:0d:5d:8e:44:2e,pdu9,192.168.8.28,24
+PK60867901,00:0d:5d:aa:b7:07,pdu10,192.168.8.29,24
 %%
-pduname=${PDU-NAME}
-net.dns.server_addrs._e_.0=${DNS1}
-net.dns.server_addrs._e_.1=${DNS2}
-security.block_time=60
-security.max_login_fails=10
+@@PDUNAME@@=${PDU}
+@@IPv4ENABLED@@=1
+@@IPv4CONFIG@@=static
+@@IPv4ADDRESS@@=${IPADDRESS}
+@@IPv4SUBNET@@=${SUBNET}
+@@IPv6ENABLED@@=0
