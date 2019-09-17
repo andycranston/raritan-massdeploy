@@ -22,6 +22,21 @@ import argparse
 
 #################################################################
 
+macros = {
+         'PDUNAME':        'pdu.name',
+         'IPv4ENABLED':    'net.interfaces[eth0].ipv4.enabled',
+         'IPv4CONFIG':     'net.interfaces[eth0].ipv4.config_method',
+         'IPv4ADDRESS':    'net.interfaces[eth0].ipv4.static.addr_cidr.addr',
+         'IPv4SUBNET':     'net.interfaces[eth0].ipv4.static.addr_cidr.prefix_len',
+         'IPv4GATEWAY':    'net.routing.ipv4.default_gateway_addr',
+         'IPv6ENABLED':    'net.interfaces[eth0].ipv6.enabled',
+         'DNS1':           'net.dns.server_addrs._e_.0',
+         'DNS2':           'net.dns.server_addrs._e_.1',
+         'DNS3':           'net.dns.server_addrs._e_.2',
+         'BLOCKTIMEOUT':   'security.block_time',
+         'FAILEDLOGINS':   'security.max_login_fails',
+         }
+
 DEFAULT_MASSDEPLOY_FILENAME   = 'massdeploy.txt'
 DEFAULT_SECTION_DELIMITER     = '%%'
 DEFAULT_COMMENT_STRING        = '#'
@@ -30,12 +45,6 @@ DEFAULT_MACRO_STRING          = '@@'
 FWUPDATE_FILENAME   = 'fwupdate.cfg'
 CONFIG_FILENAME     = 'config.txt'
 DEVICES_FILENAME    = 'devices.csv'
-
-macros = { 'PDUNAME':     'pdu.name',
-           'DNS1':        'net.dns.server_addrs._e_.0',
-           'DNS2':        'net.dns.server_addrs._e_.1',
-           'DNS3':        'net.dns.server_addrs._e_.2',
-         }
 
 #################################################################
 
