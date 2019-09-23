@@ -19,6 +19,14 @@ devices.csv
 
 which can then be copied to one or more USB keys or can be copied to a TFTP server.
 
+## Demostration video
+
+This link:
+
+[Raritan Mass Deployment Utility in Python 3 demo](https://youtu.be/OWgRR7cUBeE)
+
+is an 8 minute long YouTube video demonstrating the `massdeploy.py` utility.
+
 ## Why use `massdeploy.py` utility instead of the Raritan supplied solution?
 
 Raritan supply the following:
